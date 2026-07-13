@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>June 2026 - Progress Meeting</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <link rel="stylesheet" href="shower/themes/ribbon/styles/styles.css" />
+    <style>
+      .shower {
+        --slide-ratio: calc(16 / 9);
+      }
+      #section h2 {
+        margin: 30px 0 0;
+        color: darkolivegreen;
+        text-align: center;
+        font-size: 50px;
+      }
+
+      #section p {
+        margin: 10px 0 0;
+        text-align: center;
+        color: darkolivegreen;
+        font-style: italic;
+        font-size: 20px;
+      }
+
+      #section p a {
+        color: white;
+      }
+      #section {
+        background-color: #efefef;
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="shower list">
+    <header class="caption">
+      <h1>ENABLAR - Lesson 3</h1>
+    </header>
+
+    <section class="slide clear" id="cover">
+      <h2>ENABLAR - Lesson 3</h2>
+      <p>16 July 2026 - Pitch</p>
+      <!--         <figure>
+            <img class="cover" src="pictures/cover.jpg" alt="Hands on the orange typewriter in a park">
+            <figcaption class="copyright right white">
+                <a href="https://fiftyfootshadows.net">© John Carey</a>
+            </figcaption>
+        </figure> -->
+      <style>
+        #cover h2 {
+          margin: 30px 0 0;
+          color: white;
+          text-align: center;
+          font-size: 70px;
+        }
+
+        #cover p {
+          margin: 10px 0 0;
+          text-align: center;
+          color: white;
+          font-style: italic;
+          font-size: 20px;
+        }
+
+        #cover p a {
+          color: white;
+        }
+        #cover {
+          background-color: olive;
+        }
+      </style>
+    </section>
+
+    <section class="slide clear">
+      <h2>What is a network?</h2>
+      <figure>
+        <img class="cover" src="./img/enablar-2.png" height="80%" />
+        <figcaption class="copyright right white">
+          <a></a>
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="slide clear">
+      <h2>Networked catalogue data</h2>
+      <figure>
+        <img class="cover place right" src="./img/enablar-1.png" height="80%" />
+        <figcaption class="copyright right white">
+          <a></a>
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="slide clear">
+      <h2>Outline</h2>
+      <ul>
+        <li>
+          <mark><strong>Intro</strong></mark
+          >: What is a network (nodes, edges, degree)
+        </li>
+        <li>Catalogue data as networks</li>
+        <li>
+          <mark><strong>Section 1</strong></mark
+          >Construct the graph (code)
+        </li>
+        <li>Save as html (code)</li>
+        <li>
+          <mark><strong>Section 2</strong></mark
+          >Sigma graph with library catalogue metadata
+        </li>
+        <li>How to navigate?</li>
+        <li>
+          <mark><strong>Section 3</strong></mark
+          >Use cases for librarians
+        </li>
+      </ul>
+    </section>
+
+    <section class="slide clear">
+      <h2>Use cases</h2>
+      <ul>
+        <li><strong>Exploring</strong> a topic (for research)</li>
+        <li><strong>Discovering</strong> related titles</li>
+        <li>Learning about <strong>discipline history</strong></li>
+        <li>
+          Find out about the <strong>policy for collecting</strong> books and
+          how a library's collection has grown over time
+        </li>
+        <li>
+          Find out about the different <strong>editions of a work</strong>
+        </li>
+      </ul>
+    </section>
+
+    <section class="slide clear">
+      <h2>Network graph</h2>
+      <iframe
+        class="cover"
+        width="100%"
+        height="100%"
+        src="../src/data/nbt_index_1851-1875.html"
+        frameborder="0"
+      ></iframe>
+    </section>
+
+    <div class="progress"></div>
+
+    <script src="shower/shower.js"></script>
+  </body>
+</html>
