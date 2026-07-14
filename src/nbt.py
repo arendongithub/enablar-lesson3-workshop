@@ -1,27 +1,31 @@
 import json
+from pathlib import Path
 
 import networkx as nx
 from ipysigma import Sigma
 import matplotlib.pyplot as plt
 import time
 
+# Utility function to get the current timestamp in a specific format
 def get_timestamp():
     return time.strftime("%Y%m%d%H%M%S")
 
-# Function to convert JSON data to a NetworkX graph
+# Function to convert bibliographic JSON input data to a NetworkX graph
 def convert_json_to_nx(date_range: str):
     # Open the JSON file containing the parsed data
-    file_path = f"data/in/nbt_index_{date_range}.json"
-    with open(file_path, "r") as f:
+    file_path = Path("data") / "in" / f"nbt_index_{date_range}.json"
+    with file_path.open("r") as f:
         data = json.load(f)
         
-    # Extract the catalogue data from the JSON
+    # Extract the bibliographic catalogue data from the JSON
     catalogue_items = data["results"]["bindings"]
     item_dict_list = []
-
+    
+    # Define edges and nodes for the graph representation of the bibliographic data
     edges = []
     nodes = {}
     
+    # Iterate through each bibliographic record and extract the relevant information.
     for x in catalogue_items:
 
         if x is not None:
@@ -32,15 +36,17 @@ def convert_json_to_nx(date_range: str):
                 "title": itemdata.get("name").get("value"),
                 "language": itemdata.get("language").get("value"),
                 "date": itemdata.get("jaar").get("value"),
-                "pref_subject": itemdata.get("preflabel").get("value") if itemdata.get("preflabel") is not None else None,
-                "narrower_subject": itemdata.get("narrowerlabel").get("value") if itemdata.get("narrowerlabel") is not None else None,
-                "broader_subject": itemdata.get("broaderlabel").get("value") if itemdata.get("broaderlabel") is not None else None,
+                "pref_subject": itemdata.get("preflabel").get("value").lower() if itemdata.get("preflabel") is not None else None,
+                "narrower_subject": itemdata.get("narrowerlabel").get("value").lower() if itemdata.get("narrowerlabel") is not None else None,
+                "broader_subject": itemdata.get("broaderlabel").get("value").lower() if itemdata.get("broaderlabel") is not None else None,
             }
             item_dict_list.append(item)
 
             # Define edges for the catalogue graph
-            #for subject in item["subject"]:
-            edges.append((item["pref_subject"], item["title"]))
+            # Add edges based on the relationships between titles and subjects
+            # and between subjects themselves (broader and narrower)
+            if item["pref_subject"] is not None:
+                edges.append((item["pref_subject"], item["title"]))
             if item["narrower_subject"] is not None:
                 edges.append((item["pref_subject"], item["narrower_subject"]))
                 edges.append((item["narrower_subject"], item["title"]))
@@ -57,15 +63,19 @@ def convert_json_to_nx(date_range: str):
                 node_narrower_subject = node_attributes["narrower_subject"]
                 node_broader_subject = node_attributes["broader_subject"]
 
+                # Create sub-dictionaries for title and subject nodes with relevant attributes
                 sub_dict_title = {key: node_attributes[key] for key in keys_title_to_extract if key in node_attributes}
                 sub_dict_title["type"] = "book"
                 sub_dict_subject = {key: node_attributes[key] for key in keys_subject_to_extract if key in node_attributes}
                 sub_dict_subject["type"] = "subject"
                 
                 nodes[node_title] = sub_dict_title
-                nodes[node_pref_subject] = sub_dict_subject
-                nodes[node_narrower_subject] = sub_dict_subject
-                nodes[node_broader_subject] = sub_dict_subject
+                if node_pref_subject is not None:
+                    nodes[node_pref_subject] = sub_dict_subject
+                if node_narrower_subject is not None:
+                    nodes[node_narrower_subject] = sub_dict_subject
+                if node_broader_subject is not None:
+                    nodes[node_broader_subject] = sub_dict_subject
 
     #print(edges)
     #print(nodes)
@@ -82,10 +92,10 @@ def convert_json_to_nx(date_range: str):
     Sigma(
         G,
         )
+    output_path = Path("data") / "out" / f"nbt_index_{date_range}.html"
     Sigma.write_html(
         G,
-        #f"data/out/{get_timestamp()}_nbt_index_{date_range}.html",
-        f"data/out/nbt_index_{date_range}.html",
+        output_path,
         fullscreen=True,
         node_metrics=["louvain"],
         node_color="pref_subject",
@@ -97,7 +107,6 @@ def convert_json_to_nx(date_range: str):
             },
         max_categorical_colors=50,
         default_edge_type="curve",
-        #node_border_color_from="node",
         default_node_label_size=14,
         node_size=G.degree,
         label_density=2
