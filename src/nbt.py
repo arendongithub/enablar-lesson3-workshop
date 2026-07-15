@@ -3,7 +3,7 @@ from pathlib import Path
 
 import networkx as nx
 from ipysigma import Sigma
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import time
 
 # Utility function to get the current timestamp in a specific format
@@ -45,14 +45,15 @@ def convert_json_to_nx(date_range: str):
             # Define edges for the catalogue graph
             # Add edges based on the relationships between titles and subjects
             # and between subjects themselves (broader and narrower)
-            if item["pref_subject"] is not None:
-                edges.append((item["pref_subject"], item["title"]))
-            if item["narrower_subject"] is not None:
-                edges.append((item["pref_subject"], item["narrower_subject"]))
-                edges.append((item["narrower_subject"], item["title"]))
-            if item["broader_subject"] is not None:
-                edges.append((item["pref_subject"], item["broader_subject"]))
-                edges.append((item["broader_subject"], item["title"]))
+            if item["title"] is not None:
+                if item["pref_subject"] is not None:
+                    edges.append((item["pref_subject"], item["title"]))
+                    if item["narrower_subject"] is not None:
+                        edges.append((item["pref_subject"], item["narrower_subject"]))
+                        edges.append((item["narrower_subject"], item["title"]))
+                    if item["broader_subject"] is not None:
+                        edges.append((item["pref_subject"], item["broader_subject"]))
+                        edges.append((item["broader_subject"], item["title"]))
 
             # Define nodes for the catalogue graph
             keys_title_to_extract = ["title", "pref_subject", "narrower_subject", "broader_subject", "date", "language", "uri"]
@@ -64,12 +65,13 @@ def convert_json_to_nx(date_range: str):
                 node_broader_subject = node_attributes["broader_subject"]
 
                 # Create sub-dictionaries for title and subject nodes with relevant attributes
-                sub_dict_title = {key: node_attributes[key] for key in keys_title_to_extract if key in node_attributes}
+                sub_dict_title = {key: node_attributes[key] for key in keys_title_to_extract if key in node_attributes and node_attributes[key] is not None}
                 sub_dict_title["type"] = "book"
-                sub_dict_subject = {key: node_attributes[key] for key in keys_subject_to_extract if key in node_attributes}
+                sub_dict_subject = {key: node_attributes[key] for key in keys_subject_to_extract if key in node_attributes and node_attributes[key] is not None}
                 sub_dict_subject["type"] = "subject"
                 
-                nodes[node_title] = sub_dict_title
+                if node_title is not None:
+                    nodes[node_title] = sub_dict_title
                 if node_pref_subject is not None:
                     nodes[node_pref_subject] = sub_dict_subject
                 if node_narrower_subject is not None:
@@ -85,8 +87,12 @@ def convert_json_to_nx(date_range: str):
         G.add_edge(edge[0], edge[1])
 
     nx.set_node_attributes(G, nodes)
-    nx.draw(G, with_labels=True)
+    #nx.draw(G, with_labels=True)
     #plt.savefig("filename.png")
+    
+    # Save as GML files
+    # gml_output_path = Path("data") / "out" / "gml" / f"nbt_index_{date_range}.gml"
+    # nx.write_gml(G, gml_output_path)
 
     # Create a Sigma visualization
     Sigma(
